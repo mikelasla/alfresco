@@ -24,7 +24,7 @@ Alfresco Community (5.0.d)
 
 * From centos:centos7
 * Apache Tomcat 7.0.59
-* Sun JRE 7
+* Sun Server JRE 8.0_45
 * Database : (hostname 'postgres', database 'alfresco', user 'alfresco', password 'alfresco')
 * LibreOffice (missing)
 * Alfresco Share and Apache Solr4 running in the same Java process
