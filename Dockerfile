@@ -97,4 +97,5 @@ RUN sed -i 's,@@ALFRESCO_SOLR4_DATA_DIR@@,'"$ALF_HOME"'/solr4,g' solr4/archive-S
 ENV PATH $CATALINA_HOME/bin:$ALF_HOME/bin:$PATH
 
 EXPOSE 8080 8443 8009
+VOLUME $ALF_HOME/alf_data
 CMD ["catalina.sh", "run"]
