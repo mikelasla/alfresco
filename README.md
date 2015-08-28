@@ -37,7 +37,7 @@ Alfresco Community (5.0.d)
 
 * (2) Run Alfresco linked to postgres and expose http port to host
 
-`docker run --name alfresco-standalone --link postgres:postgres -p 8080:8080 -d mikelasla/alfresco`
+`docker run --name alfresco-standalone --link postgres:postgres -p 8080:8080 -d mikelasla/alfresco-standalone`
 
 * (3) Have fun
 
