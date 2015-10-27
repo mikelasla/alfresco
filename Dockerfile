@@ -15,8 +15,9 @@ ENV ALF_VERSION=5.0.d \
 	ALF_BUILD=5.0.d-build-00002 \
 	CATALINA_HOME=/usr/local/tomcat \
 	ALF_HOME=/usr/local/alfresco \
+	TOMCAT_KEY_ID=D63011C7 \
 	TOMCAT_MAJOR=7 \
-	TOMCAT_VERSION=7.0.63 \
+	TOMCAT_VERSION=7.0.65 \
 	JRE_BUILD=8u45-b14 \
 	JRE_VERSION=8u45 \
 	JRE_DIR=jdk1.8.0_45
@@ -37,7 +38,7 @@ RUN mkdir -p $CATALINA_HOME \
 	&& mkdir -p $ALF_HOME
 
 # get apache-tomcat
-RUN gpg --keyserver pgp.mit.edu --recv-key D63011C7 \
+RUN gpg --keyserver pgp.mit.edu --recv-key "$TOMCAT_KEY_ID" \
 	&& set -x \
 	&& curl -fSL "$TOMCAT_TGZ_URL" -o tomcat.tar.gz \
 	&& curl -fSL "$TOMCAT_TGZ_URL.asc" -o tomcat.tar.gz.asc \
