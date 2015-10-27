@@ -1,5 +1,5 @@
 FROM centos:centos7
-MAINTAINER Mikel Asla mikel.asla@entelgy.com
+MAINTAINER Mikel Asla mikel.asla@keensoft.es
 RUN yum update -y
 RUN yum install -y \
     wget \
