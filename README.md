@@ -5,7 +5,7 @@ Alfresco Standalone Community Dockerfile
 
 # Alfresco Community Dockerfile 5.1.EA
 
-Shameless fork of [Mike Lasla Alfresco Container](https://github.com/mikelasla/alfresco)
+Shameless fork of [Mikel Asla Alfresco Container](https://github.com/mikelasla/alfresco)
 
 Improvements:
 - Alfresco upped to Docker 5.1(build 201512) Early Access
