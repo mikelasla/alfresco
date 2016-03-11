@@ -3,42 +3,18 @@
 Alfresco Standalone Community Dockerfile
 
 
-# Alfresco Community Dockerfile
+# Alfresco Community Dockerfile 5.1.EA
 
-* [`5.0.d` master/Dockerfile](https://github.com/mikelasla/alfresco/blob/master/Dockerfile "Dockerfile") 
+Shameless fork of [Mikel Asla Alfresco Container](https://github.com/mikelasla/alfresco)
 
-This Dockerfile is an attempt to get Alfresco Community running as a docker container but it needs further improvements...
-I'm doing this just for learning docker and yes, i'm loving it!
-
-You can clone de project
-
-`git clone https://github.com/mikelasla/alfresco`
-
-And then build the image from within the project dir
-
-`docker build -t <TAG> .`
-
-## Actual Image status
-
-Alfresco Community (5.0.d)
-
-* From centos:centos7
-* Apache Tomcat 7.0.59
-* Sun Server JRE 8.0_45
-* Database : (hostname 'postgres', database 'alfresco', user 'alfresco', password 'alfresco')
-* LibreOffice (missing)
-* Alfresco Share and Apache Solr4 running in the same Java process
+Improvements:
+- Alfresco upped to Docker 5.1(build 201512) Early Access
+- Nice docker compose file that simplify everything
 
 ## How to use it  
 
-* (1). Run postgres in background
-
-`docker run --name postgres -e POSTGRES_DB=alfresco -e POSTGRES_USER=alfresco -e POSTGRES_PASSWORD=alfresco -d postgres`
-
-* (2) Run Alfresco linked to postgres and expose http port to host
-
-`docker run --name alfresco-standalone --link postgres:postgres -p 8080:8080 -d mikelasla/alfresco-standalone`
-
-* (3) Have fun
-
-[http://localhost:8080/share](http://localhost:8080/share)
+1. Clone this repository `git clone https://github.com/enzor/alfresco`
+2. Install Docker Toolbox or skip if You already have It: 'https://www.docker.com/products/docker-toolbox/'
+3. Start Docker Quickstart Terminal
+4. Start it with docker compose! `docker-compose -f compose.yml up -d`
+5. Have fun [http://localhost:8080/share](http://localhost:8080/share) (U/P admin/admin)

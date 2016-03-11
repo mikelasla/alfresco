@@ -1,5 +1,5 @@
 FROM centos:centos7
-MAINTAINER Mikel Asla mikel.asla@keensoft.es
+MAINTAINER Mikel Asla mikel.asla@keensoft.es, Enzo Rivello enzo.rivello@alfresco.com
 RUN yum update -y
 RUN yum install -y \
     wget \
@@ -9,15 +9,18 @@ RUN yum install -y \
     unzip \
     sed \
     ImageMagick \
-    ghostscript
+    ghostscript \
+    libreoffice-headless \
+    libreoffice
 
-ENV ALF_VERSION=5.0.d \
-	ALF_BUILD=5.0.d-build-00002 \
+
+ENV ALF_VERSION=201512-EA \
+	ALF_BUILD=201512-EA-build-00003 \
 	CATALINA_HOME=/usr/local/tomcat \
 	ALF_HOME=/usr/local/alfresco \
 	TOMCAT_KEY_ID=D63011C7 \
 	TOMCAT_MAJOR=7 \
-	TOMCAT_VERSION=7.0.65 \
+	TOMCAT_VERSION=7.0.67 \
 	JRE_BUILD=8u45-b14 \
 	JRE_VERSION=8u45 \
 	JRE_DIR=jdk1.8.0_45
@@ -26,7 +29,7 @@ ENV TOMCAT_TGZ_URL=https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOM
 	SOLR4_HOME=$ALF_HOME/solr4 \
 	JRE_TGZ=server-jre-$JRE_VERSION-linux-x64.tar.gz \
 	JAVA_HOME=/usr/local/java/$JRE_DIR \
-	ALF_ZIP=alfresco-community-$ALF_VERSION.zip
+	ALF_ZIP=alfresco-community-distribution-$ALF_VERSION.zip
 
 ENV JRE_URL=http://download.oracle.com/otn-pub/java/jdk/$JRE_BUILD/$JRE_TGZ \
 	JRE_HOME=$JAVA_HOME/jre \
@@ -64,18 +67,22 @@ WORKDIR $ALF_HOME
 # Alfresco configuration
 RUN ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
 	&& mkdir -p $CATALINA_HOME/conf/Catalina/localhost \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/web-server/shared tomcat/ \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/web-server/endorsed tomcat/ \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/web-server/lib/postgresql-9.3-1102-jdbc41.jar tomcat/lib/ \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/web-server/webapps/* tomcat/webapps/ \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/solr4/context.xml tomcat/conf/Catalina/localhost/solr4.xml \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/alf_data . \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/solr4 . \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/amps . \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/bin . \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/licenses . \
-	&& mv /tmp/alfresco/alfresco-community-$ALF_VERSION/README.txt . \
+	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/web-server/shared tomcat/ \
+	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/web-server/lib/postgresql-9.4-1201-jdbc41.jar tomcat/lib/ \
+	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/web-server/webapps/* tomcat/webapps/ \
+	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/solr4/context.xml tomcat/conf/Catalina/localhost/solr4.xml \
+	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/alf_data . \
+	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/solr4 . \
+	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/amps . \
+	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/bin . \
+	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/licenses . \
+	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/README.txt . \
 	&& rm -rf /tmp/alfresco
+
+RUN mkdir ./amps_share \
+  && chmod +x bin/apply_amps.sh 
+ 
+RUN sh ./bin/apply_amps.sh 
 
 COPY assets/server.xml $CATALINA_HOME/conf/server.xml
 COPY assets/tomcat-users.xml $CATALINA_HOME/conf/tomcat-users.xml
