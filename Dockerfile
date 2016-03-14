@@ -90,11 +90,16 @@ COPY assets/catalina.properties $CATALINA_HOME/conf/catalina.properties
 COPY assets/setenv.sh $CATALINA_HOME/bin/setenv.sh
 COPY assets/alfresco-global.properties $ALF_HOME/tomcat/shared/classes/alfresco-global.properties
 
-RUN sed -i 's,@@ALFRESCO_SOLR4_DIR@@,'"$ALF_HOME"'/solr4,g' tomcat/conf/Catalina/localhost/solr4.xml
-RUN sed -i 's,@@ALFRESCO_SOLR4_MODEL_DIR@@,'"$ALF_HOME"'/solr4/model,g' tomcat/conf/Catalina/localhost/solr4.xml
-RUN sed -i 's,@@ALFRESCO_SOLR4_CONTENT_DIR@@,'"$ALF_HOME"'/solr4/content,g' tomcat/conf/Catalina/localhost/solr4.xml
-RUN sed -i 's,@@ALFRESCO_SOLR4_DATA_DIR@@,'"$ALF_HOME"'/solr4,g' solr4/workspace-SpacesStore/conf/solrcore.properties 
-RUN sed -i 's,@@ALFRESCO_SOLR4_DATA_DIR@@,'"$ALF_HOME"'/solr4,g' solr4/archive-SpacesStore/conf/solrcore.properties 
+RUN set -x 
+	&& sed -i 's,@@ALFRESCO_SOLR4_DIR@@,'"$ALF_HOME"'/solr4,g' tomcat/conf/Catalina/localhost/solr4.xml \
+	&& sed -i 's,@@ALFRESCO_SOLR4_MODEL_DIR@@,'"$ALF_HOME"'/solr4/model,g' tomcat/conf/Catalina/localhost/solr4.xml \
+	&& sed -i 's,@@ALFRESCO_SOLR4_CONTENT_DIR@@,'"$ALF_HOME"'/solr4/content,g' tomcat/conf/Catalina/localhost/solr4.xml \
+	&& sed -i 's,@@ALFRESCO_SOLR4_DATA_DIR@@,'"$ALF_HOME"'/solr4,g' solr4/workspace-SpacesStore/conf/solrcore.properties \
+	&& sed -i 's,@@ALFRESCO_SOLR4_DATA_DIR@@,'"$ALF_HOME"'/solr4,g' solr4/archive-SpacesStore/conf/solrcore.properties \
+	&& sed -i 's,alfresco.secureComms=https,alfresco.secureComms=none,g' solr4/workspace-SpacesStore/conf/solrcore.properties \
+	&& sed -i 's,alfresco.secureComms=https,alfresco.secureComms=none,g' solr4/archive-SpacesStore/conf/solrcore.properties
+
+
 
 EXPOSE 8080 8443 8009
 VOLUME $ALF_HOME/alf_data
