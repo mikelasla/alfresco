@@ -11,7 +11,7 @@ Alfresco Standalone Community 5.1.e Dockerfile
 
 ## Updates
 
-*. Configure Alfresco-Solr4 communication to be plain HTTP
-*. Added LibreOffice external connection [LibreOffice docker image example](https://hub.docker.com/r/keensoft/libreoffice)
-*. Updated docker-compose.yml file to version 2
-*. Added ImageMagick configuration
+1. Configure Alfresco-Solr4 communication to be plain HTTP
+2. Added LibreOffice external connection [LibreOffice docker image example](https://hub.docker.com/r/keensoft/libreoffice)
+3. Updated docker-compose.yml file to version 2
+4. Added ImageMagick configuration
