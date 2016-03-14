@@ -89,7 +89,7 @@ COPY assets/amps $ALF_HOME/amps
 COPY assets/amps_share $ALF_HOME/amps_share
 RUN bash $ALF_HOME/bin/apply_amps.sh -force
 
-RUN set -x 
+RUN set -x \
 	&& sed -i 's,@@ALFRESCO_SOLR4_DIR@@,'"$ALF_HOME"'/solr4,g' tomcat/conf/Catalina/localhost/solr4.xml \
 	&& sed -i 's,@@ALFRESCO_SOLR4_MODEL_DIR@@,'"$ALF_HOME"'/solr4/model,g' tomcat/conf/Catalina/localhost/solr4.xml \
 	&& sed -i 's,@@ALFRESCO_SOLR4_CONTENT_DIR@@,'"$ALF_HOME"'/solr4/content,g' tomcat/conf/Catalina/localhost/solr4.xml \
