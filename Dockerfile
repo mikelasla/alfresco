@@ -14,13 +14,13 @@ RUN yum install -y \
     libreoffice
 
 
-ENV ALF_VERSION=201512-EA \
-	ALF_BUILD=201512-EA-build-00003 \
+ENV ALF_VERSION=201602 \
+	ALF_BUILD=201602-build-00005 \
 	CATALINA_HOME=/usr/local/tomcat \
 	ALF_HOME=/usr/local/alfresco \
 	TOMCAT_KEY_ID=D63011C7 \
 	TOMCAT_MAJOR=7 \
-	TOMCAT_VERSION=7.0.67 \
+	TOMCAT_VERSION=7.0.68 \
 	JRE_BUILD=8u45-b14 \
 	JRE_VERSION=8u45 \
 	JRE_DIR=jdk1.8.0_45
@@ -79,16 +79,15 @@ RUN ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
 	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/README.txt . \
 	&& rm -rf /tmp/alfresco
 
-RUN mkdir ./amps_share \
-  && chmod +x bin/apply_amps.sh 
- 
-RUN sh ./bin/apply_amps.sh 
-
 COPY assets/server.xml $CATALINA_HOME/conf/server.xml
 COPY assets/tomcat-users.xml $CATALINA_HOME/conf/tomcat-users.xml
 COPY assets/catalina.properties $CATALINA_HOME/conf/catalina.properties
 COPY assets/setenv.sh $CATALINA_HOME/bin/setenv.sh
 COPY assets/alfresco-global.properties $ALF_HOME/tomcat/shared/classes/alfresco-global.properties
+
+COPY assets/amps $ALF_HOME/amps
+COPY assets/amps_share $ALF_HOME/amps_share
+RUN bash $ALF_HOME/bin/apply_amps.sh -force
 
 RUN set -x 
 	&& sed -i 's,@@ALFRESCO_SOLR4_DIR@@,'"$ALF_HOME"'/solr4,g' tomcat/conf/Catalina/localhost/solr4.xml \
@@ -101,6 +100,6 @@ RUN set -x
 
 
 
-EXPOSE 8080 8443 8009
+EXPOSE 8080 8009
 VOLUME $ALF_HOME/alf_data
 CMD ["catalina.sh", "run"]
