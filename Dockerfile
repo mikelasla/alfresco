@@ -20,7 +20,7 @@ ENV ALF_VERSION=201602 \
 	TOMCAT_MAJOR=7 \
 	TOMCAT_VERSION=7.0.68 \
 	JRE_BUILD=8u65-b17 \
-	JRE_VERSION=6u65 \
+	JRE_VERSION=8u65 \
 	JRE_DIR=jdk1.8.0_65
 
 ENV TOMCAT_TGZ_URL=https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
