@@ -9,9 +9,7 @@ RUN yum install -y \
     unzip \
     sed \
     ImageMagick \
-    ghostscript \
-    libreoffice-headless \
-    libreoffice
+    ghostscript
 
 
 ENV ALF_VERSION=201602 \
