@@ -64,7 +64,7 @@ RUN mkdir /tmp/alfresco \
 
 WORKDIR $ALF_HOME
 
-# Alfresco configuration
+# Alfresco basic instalation 
 RUN ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
 	&& mkdir -p $CATALINA_HOME/conf/Catalina/localhost \
 	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/web-server/shared tomcat/ \
@@ -79,16 +79,25 @@ RUN ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
 	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/README.txt . \
 	&& rm -rf /tmp/alfresco
 
-COPY assets/server.xml $CATALINA_HOME/conf/server.xml
-COPY assets/tomcat-users.xml $CATALINA_HOME/conf/tomcat-users.xml
-COPY assets/catalina.properties $CATALINA_HOME/conf/catalina.properties
-COPY assets/setenv.sh $CATALINA_HOME/bin/setenv.sh
-COPY assets/alfresco-global.properties $ALF_HOME/tomcat/shared/classes/alfresco-global.properties
+# Configure Tomcat
+COPY assets/tomcat/catalina.properties $CATALINA_HOME/conf/catalina.properties
+COPY assets/tomcat/setenv.sh $CATALINA_HOME/bin/setenv.sh
 
-COPY assets/amps $ALF_HOME/amps
-COPY assets/amps_share $ALF_HOME/amps_share
-RUN bash $ALF_HOME/bin/apply_amps.sh -force
+# Install Alfresco Office Services  
+COPY assets/aos/alfresco-aos-module-1.1-65.zip /tmp/alfresco-aos-module-1.1-65.zip
+RUN set -x \
+	&& mkdir /tmp/aos \
+	&& unzip /tmp/alfresco-aos-module-1.1-65.zip -d /tmp/aos \
+	&& mv /tmp/aos/extension/* tomcat/shared/classes/alfresco/extension \
+	&& mv /tmp/aos/alfresco-aos-module-1.1.amp amps \
+	&& mv /tmp/aos/aos-module-license.txt . \
+	&& mv /tmp/aos/_vti_bin.war tomcat/webapps \
+	&& rm -rf /tmp/aos /tmp/alfresco-aos-module-1.1-65.zip
 
+# Configure Alfresco
+COPY assets/alfresco/alfresco-global.properties $ALF_HOME/tomcat/shared/classes/alfresco-global.properties
+
+# Configure Solr4
 RUN set -x \
 	&& sed -i 's,@@ALFRESCO_SOLR4_DIR@@,'"$ALF_HOME"'/solr4,g' tomcat/conf/Catalina/localhost/solr4.xml \
 	&& sed -i 's,@@ALFRESCO_SOLR4_MODEL_DIR@@,'"$ALF_HOME"'/solr4/model,g' tomcat/conf/Catalina/localhost/solr4.xml \
@@ -98,7 +107,10 @@ RUN set -x \
 	&& sed -i 's,alfresco.secureComms=https,alfresco.secureComms=none,g' solr4/workspace-SpacesStore/conf/solrcore.properties \
 	&& sed -i 's,alfresco.secureComms=https,alfresco.secureComms=none,g' solr4/archive-SpacesStore/conf/solrcore.properties
 
-
+# Install AMPs
+COPY assets/amps $ALF_HOME/amps
+COPY assets/amps_share $ALF_HOME/amps_share
+RUN bash $ALF_HOME/bin/apply_amps.sh -force
 
 EXPOSE 8080 8009
 VOLUME $ALF_HOME/alf_data
