@@ -4,7 +4,7 @@ Alfresco Community Edition docker image
 
 ## Updates
 
-1. Updated to version 5.1.e (201602-GA)
+1. Updated to version 201605-GA
 2. Configured Alfresco-Solr4 communication to be plain HTTP
 3. Added LibreOffice external connection [LibreOffice docker image example](https://hub.docker.com/r/keensoft/libreoffice)
 4. Updated docker-compose.yml file to version 2
@@ -13,34 +13,44 @@ Alfresco Community Edition docker image
 7. Added Google Docs intregration amps
 8. Added JConsole addOn
 
-## Manual Startup
+## Use 
 
-* First thing we need is a PostgreSQL database to connect to, if you haven't one already, just run it with docker
+1. [Docker Compose](https://docs.docker.com/compose/compose-file/)
 
-	docker run --name postgres -e POSTGRES_DB=alfresco -e POSTGRES_USER=alfresco -e POSTGRES_PASSWORD=alfresco -d postgres
+~~~~~
+$ docker-compose up -d --build
+$ docker-compose up -d libreoffice (workarround to the **first** execution of libreoffice container)
+$ docker-compose logs -f alfresco
+~~~~~
 
-* Second, we need a LibreOffice instance that Alfresco will use as a [Trasnformation server](https://hub.docker.com/r/keensoft/libreoffice/) (in TCP 8100 by default)
+2. Manual startup
 
-	docker run --name libreoffice -d keensoft/libreoffice:latest
+First thing we need is a PostgreSQL database to connect to, if you haven't one already, just run it with docker
 
-* Third, build this docker image
+~~~~~
+$ docker run --name postgres -e POSTGRES_DB=alfresco -e POSTGRES_USER=alfresco -e POSTGRES_PASSWORD=alfresco -d postgres
+~~~~~
 
-	docker build -t \(your_tag\) .
+Second, we need a LibreOffice instance that Alfresco will use as a [Trasnformation server](https://hub.docker.com/r/keensoft/libreoffice/) (in TCP 8100 by default)
 
-* And lastly run the dockerized Alfresco 
+~~~~~
+$ docker run --name libreoffice -d keensoft/libreoffice:4.4.5
+~~~~~
 
-	docker run --name \(your_name\) --link postgres:postgres --link libreoffice:libreoffice -p 8080:8080 -d \(your_tag\)
+Third, build this docker image
+
+~~~~~
+$ docker build -t \(your_tag\) .
+~~~~~
+
+And lastly run the dockerized Alfresco 
+
+~~~~~
+$ docker run --name \(your_name\) --link postgres:postgres --link libreoffice:libreoffice -p 8080:8080 -d \(your_tag\)
+~~~~~
 	
-
-## Docker Compose
-
-* You can also find a [docker-compose](https://docs.docker.com/compose/compose-file/) configuration file, which uses "depends-on" directive (Compose file version 2) to ensure components follow desired order starting and stopping services.
-
-	docker-compose up -d 
-
-
 ## Access 
 
-	http://localhost:8080/share (admin/admin)
-
-
+~~~~~
+http://localhost:8080/share (admin/admin)
+~~~~~

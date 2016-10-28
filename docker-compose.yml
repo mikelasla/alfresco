@@ -5,7 +5,6 @@ services:
     depends_on:
       - postgres
       - libreoffice
-    container_name: alfresco-example-container
     links:
       - postgres
       - libreoffice
@@ -13,11 +12,11 @@ services:
       - 8080:8080
 
  libreoffice:
-    image: keensoft/libreoffice:latest
-    container_name: libreoffice
+    image: keensoft/libreoffice:4.4.5
+    user: root
+
  postgres:
     image: postgres 
-    container_name: postgres
     environment:
       - POSTGRES_DB=alfresco
       - POSTGRES_USER=alfresco

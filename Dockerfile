@@ -12,18 +12,18 @@ RUN yum install -y \
     ghostscript
 
 
-ENV ALF_VERSION=201602 \
-	ALF_BUILD=201602-build-00005 \
+ENV ALF_VERSION=201605 \
+	ALF_BUILD=201605-build-00010 \
 	CATALINA_HOME=/usr/local/tomcat \
 	ALF_HOME=/usr/local/alfresco \
 	TOMCAT_KEY_ID=D63011C7 \
 	TOMCAT_MAJOR=7 \
-	TOMCAT_VERSION=7.0.68 \
-	JRE_BUILD=8u65-b17 \
-	JRE_VERSION=8u65 \
-	JRE_DIR=jdk1.8.0_65
+	TOMCAT_VERSION=7.0.69 \
+	JRE_BUILD=8u111-b14 \
+	JRE_VERSION=8u111 \
+	JRE_DIR=jdk1.8.0_111
 
-ENV TOMCAT_TGZ_URL=https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
+ENV TOMCAT_TGZ_URL=https://archive.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
 	SOLR4_HOME=$ALF_HOME/solr4 \
 	JRE_TGZ=server-jre-$JRE_VERSION-linux-x64.tar.gz \
 	JAVA_HOME=/usr/local/java/$JRE_DIR \
