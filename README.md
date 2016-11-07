@@ -15,7 +15,7 @@ Alfresco Community Edition docker image
 
 ## Use 
 
-1. [Docker Compose](https://docs.docker.com/compose/compose-file/)
+### [Docker Compose](https://docs.docker.com/compose/compose-file/)
 
 ~~~~~
 $ docker-compose up -d --build
@@ -23,7 +23,7 @@ $ docker-compose up -d libreoffice (workarround to the **first** execution of li
 $ docker-compose logs -f alfresco
 ~~~~~
 
-2. Manual startup
+### Manual startup
 
 First thing we need is a PostgreSQL database to connect to, if you haven't one already, just run it with docker
 
