@@ -2,44 +2,56 @@ FROM centos:centos7
 MAINTAINER Mikel Asla mikel.asla@keensoft.es, Enzo Rivello enzo.rivello@alfresco.com
 RUN yum update -y
 RUN yum install -y \
-    wget \
+    apr \
+    apr-devel \
     curl \
+    cpp \
+    gcc \
+    ghostscript \
     gpg \
+    ImageMagick \
+    lsof \
+    make \
     tar \
     unzip \
     sed \
-    ImageMagick \
-    ghostscript
+    wget 
+RUN yum clean all
 
-
-ENV ALF_VERSION=201605 \
-	ALF_BUILD=201605-build-00010 \
+ENV ALF_VERSION=201701 \
+	ALF_BUILD=201701-build-00015 \
 	CATALINA_HOME=/usr/local/tomcat \
 	ALF_HOME=/usr/local/alfresco \
 	TOMCAT_KEY_ID=D63011C7 \
 	TOMCAT_MAJOR=7 \
 	TOMCAT_VERSION=7.0.69 \
-	JRE_BUILD=8u111-b14 \
-	JRE_VERSION=8u111 \
-	JRE_DIR=jdk1.8.0_111
+	JDK_BUILD=8u121-b13 \
+	JDK_VERSION=8u121 \
+	JDK_DIR=jdk1.8.0_121 \
+	AOS_VERSION=1.1.5 \
+        LANG="es_ES.utf8"
 
 ENV TOMCAT_TGZ_URL=https://archive.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
-	SOLR4_HOME=$ALF_HOME/solr4 \
-	JRE_TGZ=server-jre-$JRE_VERSION-linux-x64.tar.gz \
-	JAVA_HOME=/usr/local/java/$JRE_DIR \
-	ALF_ZIP=alfresco-community-distribution-$ALF_VERSION.zip
+	JDK_RPM=jdk-$JDK_VERSION-linux-x64.rpm \
+	JAVA_HOME=/usr/java/$JDK_DIR \
+	ALF_ZIP=alfresco-community-distribution-$ALF_VERSION.zip \
+	AOS_ZIP=alfresco-aos-module-$AOS_VERSION.zip \
+	AOS_AMP=alfresco-aos-module-$AOS_VERSION.amp 
 
-ENV JRE_URL=http://download.oracle.com/otn-pub/java/jdk/$JRE_BUILD/$JRE_TGZ \
+ENV JDK_URL=http://download.oracle.com/otn-pub/java/jdk/$JDK_BUILD/e9e7ea248e2c4826b92b3f075a80e441/$JDK_RPM \
 	JRE_HOME=$JAVA_HOME/jre \
-	ALF_DOWNLOAD_URL=http://dl.alfresco.com/release/community/$ALF_BUILD/$ALF_ZIP
+	ALF_DOWNLOAD_URL=https://download.alfresco.com/release/community/$ALF_BUILD/$ALF_ZIP \
+	AOS_DOWNLOAD_URL=https://download.alfresco.com/release/community/$ALF_BUILD/$AOS_ZIP \
+	DIST=/tmp/alfresco/alfresco-community-distribution-$ALF_VERSION
 
 ENV PATH $CATALINA_HOME/bin:$ALF_HOME/bin:$PATH
 
-RUN mkdir -p $CATALINA_HOME \
-	&& mkdir -p $ALF_HOME
+RUN set -x \
+	&& mkdir -p $CATALINA_HOME $ALF_HOME
 
 # get apache-tomcat
-RUN gpg --keyserver pgp.mit.edu --recv-key "$TOMCAT_KEY_ID" \
+RUN set -x \
+	&& gpg --keyserver pgp.mit.edu --recv-key "$TOMCAT_KEY_ID" \
 	&& set -x \
 	&& curl -fSL "$TOMCAT_TGZ_URL" -o tomcat.tar.gz \
 	&& curl -fSL "$TOMCAT_TGZ_URL.asc" -o tomcat.tar.gz.asc \
@@ -47,50 +59,58 @@ RUN gpg --keyserver pgp.mit.edu --recv-key "$TOMCAT_KEY_ID" \
 	&& tar -xvf tomcat.tar.gz --strip-components=1 -C $CATALINA_HOME \
 	&& rm tomcat.tar.gz*
 
+# get oracle jdk1.8.0.121
+RUN set -x \
+	&& wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" $JDK_URL \
+	&& rpm -Uvh $JDK_RPM \
+	&& rm -f $JDK_RPM
 
-# get sun server-jre
-RUN wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" $JRE_URL \
-	&& mkdir -p /usr/local/java \
-	&& tar xzvf $JRE_TGZ -C /usr/local/java \
-	&& rm -f $JRE_TGZ
+# compile APR
+RUN set -x \
+	&& tar zxf $CATALINA_HOME/bin/tomcat-native.tar.gz -C /tmp \
+	&& cd /tmp/tomcat-native-1.1.33-src/jni/native/ \
+	&& ./configure --with-apr=/usr/bin/apr-1-config --with-java-home=$JAVA_HOME --libdir=/usr/lib/jni --with-ssl=no \
+	&& make && make install \
+	&& cd && rm -rf /tmp/tomcat-native* \
+	&& yum remove -y gcc make cpp \
+	&& yum clean all
 
 # get alfresco ZIP
-RUN mkdir /tmp/alfresco \
-	&& wget $ALF_DOWNLOAD_URL \
+RUN set -x \
+	&& mkdir /tmp/alfresco \
+	&& wget --no-check-certificate $ALF_DOWNLOAD_URL \
 	&& unzip $ALF_ZIP -d /tmp/alfresco \
 	&& rm -f $ALF_ZIP
 
 WORKDIR $ALF_HOME
 
 # Alfresco basic instalation 
-RUN ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
+RUN set -x \
+	&& ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
 	&& mkdir -p $CATALINA_HOME/conf/Catalina/localhost \
-	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/web-server/shared tomcat/ \
-	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/web-server/lib/postgresql-9.4-1201-jdbc41.jar tomcat/lib/ \
-	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/web-server/webapps/* tomcat/webapps/ \
-	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/solr4/context.xml tomcat/conf/Catalina/localhost/solr4.xml \
-	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/alf_data . \
-	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/solr4 . \
-	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/amps . \
-	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/bin . \
-	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/licenses . \
-	&& mv /tmp/alfresco/alfresco-community-distribution-$ALF_VERSION/README.txt . \
+	&& mv $DIST/web-server/conf/Catalina/localhost/alfresco.xml tomcat/conf/Catalina/localhost/ \
+	&& mv $DIST/web-server/conf/Catalina/localhost/share.xml tomcat/conf/Catalina/localhost/ \
+	&& mv $DIST/web-server/lib/* tomcat/lib/ \
+	&& mv $DIST/web-server/shared tomcat/ \
+	&& mv $DIST/web-server/webapps/alfresco.war tomcat/webapps/ \
+	&& mv $DIST/web-server/webapps/share.war tomcat/webapps/ \
+	&& mv $DIST/web-server/webapps/ROOT.war tomcat/webapps/ \
+	&& mv $DIST/web-server/webapps/solr4.war tomcat/webapps/ \
+	&& mv $DIST/solr4/context.xml tomcat/conf/Catalina/localhost/solr4.xml \
+	&& mv $DIST/solr4 . \
+	&& mv $DIST/alf_data . \
+	&& mv $DIST/amps . \
+	&& mv $DIST/amps_share . \
+	&& mv $DIST/bin . \
+	&& mv $DIST/licenses . \
+	&& mv $DIST/modules . \
+	&& mv $DIST/README.txt . \
 	&& rm -rf /tmp/alfresco
 
 # Configure Tomcat
 COPY assets/tomcat/catalina.properties $CATALINA_HOME/conf/catalina.properties
 COPY assets/tomcat/setenv.sh $CATALINA_HOME/bin/setenv.sh
-
-# Install Alfresco Office Services  
-COPY assets/aos/alfresco-aos-module-1.1-65.zip /tmp/alfresco-aos-module-1.1-65.zip
-RUN set -x \
-	&& mkdir /tmp/aos \
-	&& unzip /tmp/alfresco-aos-module-1.1-65.zip -d /tmp/aos \
-	&& mv /tmp/aos/extension/* tomcat/shared/classes/alfresco/extension \
-	&& mv /tmp/aos/alfresco-aos-module-1.1.amp amps \
-	&& mv /tmp/aos/aos-module-license.txt . \
-	&& mv /tmp/aos/_vti_bin.war tomcat/webapps \
-	&& rm -rf /tmp/aos /tmp/alfresco-aos-module-1.1-65.zip
+COPY assets/tomcat/server.xml $CATALINA_HOME/conf/server.xml
 
 # Configure Alfresco
 COPY assets/alfresco/alfresco-global.properties $ALF_HOME/tomcat/shared/classes/alfresco-global.properties
@@ -105,11 +125,32 @@ RUN set -x \
 	&& sed -i 's,alfresco.secureComms=https,alfresco.secureComms=none,g' solr4/workspace-SpacesStore/conf/solrcore.properties \
 	&& sed -i 's,alfresco.secureComms=https,alfresco.secureComms=none,g' solr4/archive-SpacesStore/conf/solrcore.properties
 
-# Install AMPs
+# Install Alfresco Office Services
+RUN set -x \
+	&& mkdir /tmp/aos \
+	&& wget --no-check-certificate $AOS_DOWNLOAD_URL \
+	&& unzip $AOS_ZIP -d /tmp/aos \
+	&& mv /tmp/aos/extension/* tomcat/shared/classes/alfresco/extension \
+	&& mv /tmp/aos/$AOS_AMP amps \
+	&& mv /tmp/aos/aos-module-license.txt licenses \
+	&& mv /tmp/aos/_vti_bin.war tomcat/webapps \
+	&& rm -rf /tmp/aos $AOS_ZIP
+
+# Install addons 
 COPY assets/amps $ALF_HOME/amps
 COPY assets/amps_share $ALF_HOME/amps_share
-RUN bash $ALF_HOME/bin/apply_amps.sh -force
+RUN set -x \
+	&& bash $ALF_HOME/bin/apply_amps.sh -force
 
-EXPOSE 8080 8009
+# Install api-explorer WAR file
+COPY assets/api-explorer/api-explorer.war tomcat/webapps/api-explorer.war
+
+# Add user alfresco
+RUN set -x \
+	&& useradd -ms /bin/bash alfresco \
+	&& chown -RL alfresco:alfresco $ALF_HOME
+USER alfresco
+
+EXPOSE 8080
 VOLUME $ALF_HOME/alf_data
 CMD ["catalina.sh", "run"]

@@ -1,7 +1,10 @@
-JAVA_OPTS="$JAVA_OPTS -Dalfresco.home=/usr/local/alfresco" 
+#!/bin/bash
+#
+JAVA_OPTS="-Djava.library.path=/usr/lib/jni"
+JAVA_OPTS="$JAVA_OPTS -Dalfresco.home=/usr/local/alfresco"
+JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8"
 JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote"
-#JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
 JAVA_OPTS="$JAVA_OPTS -XX:ReservedCodeCacheSize=128m"
-JAVA_OPTS="$JAVA_OPTS -Xms512M -Xmx1024M" # java-memory-settings
+JAVA_OPTS="$JAVA_OPTS -Xms2048M -Xmx2048M" # java-memory-settings
 export JAVA_OPTS
-			    
+

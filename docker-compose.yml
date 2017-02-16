@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 services:
  alfresco:
     build: .
@@ -11,13 +11,12 @@ services:
     ports:
       - 8080:8080
 
- libreoffice:
-    image: keensoft/libreoffice:4.4.5
-    user: root
-
  postgres:
-    image: postgres 
+    image: postgres:9.4
     environment:
       - POSTGRES_DB=alfresco
       - POSTGRES_USER=alfresco
       - POSTGRES_PASSWORD=alfresco
+
+ libreoffice:
+    image: xcgd/libreoffice
