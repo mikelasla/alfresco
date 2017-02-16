@@ -7,15 +7,14 @@ This images runs a standalone Alfresco Community [201701-GA](https://community.a
 1. Centos 7
 2. Apache Tomcat 7.0.69
 3. Oracle JDK 1.8.0.121
-4. Apache HTTPD 2.4
-5. PostgreSQL 9.4.4
-6. Alfresco Platform 5.2.e
-7. Alfresco Share 5.2.d
-8. Solr 4.10.3
-9. AOS Module 1.1.5
-10. Aikau 1.0.101.3 (SCM tag)
-11. LibreOffice 5.1.4.2 (Based on image from [XCGD](https://hub.docker.com/r/xcgd/libreoffice/))
-12. ImageMagick 6.9.1-10
+4. PostgreSQL 9.4.4
+5. Alfresco Platform 5.2.e
+6. Alfresco Share 5.2.d
+7. Solr 4.10.3
+8. AOS Module 1.1.5
+9. Aikau 1.0.101.3 (SCM tag)
+10. LibreOffice 5.1.4.2 (Based on image from [XCGD](https://hub.docker.com/r/xcgd/libreoffice/))
+11. ImageMagick 6.9.1-10
 
 
 ## Use
@@ -36,7 +35,6 @@ $ docker-compose up -d --build
 $ docker-compose logs -f alfresco
 ~~~~~
 
-
 ## Addons included
 
 1. [Alfresco JavaScript Console 0.6](https://github.com/share-extras/js-console)
@@ -52,7 +50,6 @@ Check this page for reference on new Alfresco 5.2 REST API
 [Alfresco 5.2 REST API Reference community DOC](https://community.alfresco.com/docs/DOC-6532-alfresco-52-rest-apis)
 
 Thanks to [Gavin Cornwell](https://github.com/gavincornwell) for a great job documenting this new Alfresco functionality
-
 
 ## Access
 
