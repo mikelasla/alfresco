@@ -1,6 +1,6 @@
-# Alfresco Community Edition 201701-GA docker image
+# Alfresco Community Edition 201702-GA docker image
 
-This images runs a standalone Alfresco Community [201701-GA](https://community.alfresco.com/docs/DOC-6587-alfresco-community-edition-201701-ga-release-notes) version
+This images runs a standalone Alfresco Community [201702-GA](https://community.alfresco.com/docs/DOC-6576-alfresco-community-edition-201701-ga-release-notes) version
 
 ## Stack
 
@@ -8,8 +8,8 @@ This images runs a standalone Alfresco Community [201701-GA](https://community.a
 2. Apache Tomcat 7.0.69
 3. Oracle JDK 1.8.0.121
 4. PostgreSQL 9.4.4
-5. Alfresco Platform 5.2.e
-6. Alfresco Share 5.2.d
+5. Alfresco Platform 5.2.f
+6. Alfresco Share 5.2.e
 7. Solr 4.10.3
 8. AOS Module 1.1.5
 9. Aikau 1.0.101.3 (SCM tag)
@@ -27,12 +27,12 @@ $ docker run -d --name libreoffice xcgd/libreoffice
 $ docker run -it --name alfresco -p 8080:8080 --link postgres:postgres --link libreoffice:libreoffice mikelasla/alfresco-standalone
 ~~~~~
 
+
 ### docker-compose
 
 ~~~~~
 $ git clone https://github.com/mikelasla/alfresco
-$ docker-compose up -d --build
-$ docker-compose logs -f alfresco
+$ docker-compose up
 ~~~~~
 
 ## Addons included

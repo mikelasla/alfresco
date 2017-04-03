@@ -18,8 +18,8 @@ RUN yum install -y \
     wget 
 RUN yum clean all
 
-ENV ALF_VERSION=201701 \
-	ALF_BUILD=201701-build-00015 \
+ENV ALF_VERSION=201702 \
+	ALF_BUILD=201702-build-00016 \
 	CATALINA_HOME=/usr/local/tomcat \
 	ALF_HOME=/usr/local/alfresco \
 	TOMCAT_KEY_ID=D63011C7 \
@@ -29,7 +29,7 @@ ENV ALF_VERSION=201701 \
 	JDK_VERSION=8u121 \
 	JDK_DIR=jdk1.8.0_121 \
 	AOS_VERSION=1.1.5 \
-        LANG="es_ES.utf8"
+        LANG="en_US.utf8"
 
 ENV TOMCAT_TGZ_URL=https://archive.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
 	JDK_RPM=jdk-$JDK_VERSION-linux-x64.rpm \
@@ -51,7 +51,7 @@ RUN set -x \
 
 # get apache-tomcat
 RUN set -x \
-	&& gpg --keyserver pgp.mit.edu --recv-key "$TOMCAT_KEY_ID" \
+	&& gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-key "$TOMCAT_KEY_ID" \
 	&& set -x \
 	&& curl -fSL "$TOMCAT_TGZ_URL" -o tomcat.tar.gz \
 	&& curl -fSL "$TOMCAT_TGZ_URL.asc" -o tomcat.tar.gz.asc \
@@ -143,7 +143,8 @@ RUN set -x \
 	&& bash $ALF_HOME/bin/apply_amps.sh -force
 
 # Install api-explorer WAR file
-COPY assets/api-explorer/api-explorer.war tomcat/webapps/api-explorer.war
+RUN set -x \
+	&& wget https://artifacts.alfresco.com/nexus/service/local/repositories/releases/content/org/alfresco/api-explorer/5.2.0/api-explorer-5.2.0.war -O tomcat/webapps/api-explorer.war
 
 # Add user alfresco
 RUN set -x \
