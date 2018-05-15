@@ -36,10 +36,10 @@ alfrescostandalone_solr6_1         ./run.sh run                    Up      8983/
 You can skip the use of Docker Compose and start Alfresco with just `docker run` commands (not recomended)
 
 ~~~~~
-$ docker run -d --net alfnet --name postgres -e POSTGRES_DB=alfresco -e POSTGRES_USER=alfresco -e POSTGRES_PASSWORD=alfresco postgres:9.4
-$ docker run -d --net alfnet --name solr6 keensoft/alfresco-solr6:201707GA
-$ docker run -d --net alfnet --name libreoffice keensoft/libreoffice:latest
-$ docker run -it --net alfnet --name alfresco -p 8080:8080 mikelasla/alfresco-standalone
+$ docker run -d --network alfnet --name postgres -e POSTGRES_DB=alfresco -e POSTGRES_USER=alfresco -e POSTGRES_PASSWORD=alfresco postgres:9.4
+$ docker run -d --network alfnet --name solr6 keensoft/alfresco-solr6:201707GA
+$ docker run -d --network alfnet --name libreoffice keensoft/libreoffice:latest
+$ docker run -it --network alfnet --name alfresco -p 8080:8080 mikelasla/alfresco-standalone
 ~~~~~
 
 ### Docker Compose
