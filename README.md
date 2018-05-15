@@ -70,6 +70,5 @@ The image also has the api-exlorer webapp, check this page for reference on new 
 ~~~~~
 http://localhost:8080/share
 http://localhost:8080/alfresco
-http://localhost:8080/solr4
 http://localhost:8080/api-explorer
 ~~~~~
