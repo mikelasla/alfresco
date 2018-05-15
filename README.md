@@ -1,34 +1,48 @@
-# Alfresco Community Edition 201702-GA docker image
+# Alfresco Community Edition 201707-GA docker image
 
-This images runs a standalone Alfresco Community [201702-GA](https://community.alfresco.com/docs/DOC-6576-alfresco-community-edition-201701-ga-release-notes) version
+This image runs Alfresco Community [201707-GA](https://community.alfresco.com/docs/DOC-7034-alfresco-community-edition-201704-ga-release) version. 
 
 ## Stack
 
-1. Centos 7
-2. Apache Tomcat 7.0.69
-3. Oracle JDK 1.8.0.121
-4. PostgreSQL 9.4.4
-5. Alfresco Platform 5.2.f
-6. Alfresco Share 5.2.e
-7. Solr 4.10.3
-8. AOS Module 1.1.5
+2. Apache Tomcat 7.0.86
+3. OpenJDK 1.8.0_171
+4. PostgreSQL 9.4
+5. Alfresco Platform 5.2.g (201707GA)
+6. Alfresco Share 5.2.f (201707GA)
+7. Solr 6 (alfresco-search-services-1.1.0)
+8. AOS Module 1.1.6
 9. Aikau 1.0.101.3 (SCM tag)
-10. LibreOffice 5.1.4.2 (Based on image from [XCGD](https://hub.docker.com/r/xcgd/libreoffice/))
+10. LibreOffice 5.2 
 11. ImageMagick 6.9.1-10
 
+## Images
+
+This project produces Alfresco Community 201707GA repository image. It also provides a docker-compose.yml file to wire everything up.
+
+```bash
+ docker-compose ps
+              Name                            Command              State           Ports         
+-------------------------------------------------------------------------------------------------
+alfrescostandalone_alfresco_1      catalina.sh run                 Up      0.0.0.0:8080->8080/tcp
+alfrescostandalone_libreoffice_1   /opt/libreoffice/startoo.sh     Up      8100/tcp              
+alfrescostandalone_postgres_1      docker-entrypoint.sh postgres   Up      5432/tcp              
+alfrescostandalone_solr6_1         ./run.sh run                    Up      8983/tcp 
+```
 
 ## Use
 
 ### Manual startup
 
+You can skip the use of Docker Compose and start Alfresco with just `docker run` commands (not recomended)
+
 ~~~~~
-$ docker run -d --name postgres -e POSTGRES_DB=alfresco -e POSTGRES_USER=alfresco -e POSTGRES_PASSWORD=alfresco postgres:9.4
-$ docker run -d --name libreoffice xcgd/libreoffice
-$ docker run -it --name alfresco -p 8080:8080 --link postgres:postgres --link libreoffice:libreoffice mikelasla/alfresco-standalone
+$ docker run -d --net alfnet --name postgres -e POSTGRES_DB=alfresco -e POSTGRES_USER=alfresco -e POSTGRES_PASSWORD=alfresco postgres:9.4
+$ docker run -d --net alfnet --name solr6 keensoft/alfresco-solr6:201707GA
+$ docker run -d --net alfnet --name libreoffice keensoft/libreoffice:latest
+$ docker run -it --net alfnet --name alfresco -p 8080:8080 mikelasla/alfresco-standalone
 ~~~~~
 
-
-### docker-compose
+### Docker Compose
 
 ~~~~~
 $ git clone https://github.com/mikelasla/alfresco
@@ -45,11 +59,9 @@ $ docker-compose up
 
 ## [Alfresco 5.2 REST API explorer](https://github.com/Alfresco/rest-api-explorer)
 
-Check this page for reference on new Alfresco 5.2 REST API
+The image also has the api-exlorer webapp, check this page for reference on new Alfresco 5.2 REST API
 
 [Alfresco 5.2 REST API Reference community DOC](https://community.alfresco.com/docs/DOC-6532-alfresco-52-rest-apis)
-
-Thanks to [Gavin Cornwell](https://github.com/gavincornwell) for a great job documenting this new Alfresco functionality
 
 ## Access
 

@@ -1,22 +1,48 @@
-version: "3"
+version: '3.1'
+
+networks:
+  alfrescoNet:
+
 services:
  alfresco:
     build: .
-    depends_on:
-      - postgres
-      - libreoffice
-    links:
-      - postgres
-      - libreoffice
+    networks:
+      alfrescoNet:
+        aliases:
+          - alfresco
     ports:
       - 8080:8080
+    environment:
+      LANG: en_US.utf8
+      JAVA_OPTS: "
+                    -Dalfresco.home=/usr/local/alfresco
+                    -Dfile.encoding=UTF-8
+                    -XX:ReservedCodeCacheSize=128m
+                    -Xms2048M -Xmx2048M
+                  "
+
+ solr6:
+  image: keensoft/alfresco-solr6:201707-GA
+  networks:
+   alfrescoNet:
+    aliases:
+      - solr6
 
  postgres:
     image: postgres:9.4
+    networks:
+      alfrescoNet:
+        aliases:
+          - postgres
     environment:
       - POSTGRES_DB=alfresco
       - POSTGRES_USER=alfresco
-      - POSTGRES_PASSWORD=alfresco
+      - POSTGRES_PASSWORD=alfresco      
 
  libreoffice:
-    image: xcgd/libreoffice
+  image: keensoft/libreoffice:latest
+  networks:
+    alfrescoNet:
+      aliases:
+        - libreoffice
+
